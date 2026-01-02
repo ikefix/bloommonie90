@@ -1,7 +1,7 @@
 @extends('layouts.adminapp')
 
 @section('admincontent')
-    <h1>Dashboard</h1>
+    <h1>Welcome{{ Auth::user()->name }}</h1>
 
 <div class="container">
     <div class="dashboard-stats">

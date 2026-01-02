@@ -5,6 +5,9 @@
 @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/app.css'])
 
 @section('content')
+
+    <h1>Welcome{{ Auth::user()->name }}</h1>
+
 <div class="container">
     <h2>Cashier Sales</h2>
 <!-- 🔍 Receipt Search by Tracking ID -->
