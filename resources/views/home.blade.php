@@ -6,9 +6,10 @@
 
 @section('content')
 
-    <h1>Welcome{{ Auth::user()->name }}</h1>
 
 <div class="container">
+    <h3>Welcome {{ Auth::user()->name }}</h3>
+    
     <h2>Cashier Sales</h2>
 <!-- 🔍 Receipt Search by Tracking ID -->
 @if(session('error'))

@@ -2,9 +2,9 @@
 
 @section('managercontent')
 
-    <h1>Welcome{{ Auth::user()->name }}</h1>
 
 <div class="container">
+    <h3>Welcome {{ Auth::user()->name }}</h3>
     {{-- @if(Auth::user()->role === 'admin')
         <a href="{{ route('admin.manage_roles') }}" class="btn btn-primary">Manage Users</a>
     @endif --}}

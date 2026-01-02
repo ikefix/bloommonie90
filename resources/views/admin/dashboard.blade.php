@@ -1,9 +1,9 @@
 @extends('layouts.adminapp')
 
 @section('admincontent')
-    <h1>Welcome{{ Auth::user()->name }}</h1>
 
 <div class="container">
+    <h3>Welcome {{ Auth::user()->name }}</h3>
     <div class="dashboard-stats">
         <div class="stat-box">
             <h4><i class='bx bx-cart'></i> Total Sales For The Week</h4>
