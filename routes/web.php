@@ -362,6 +362,8 @@ Route::get('/admin/invoices/{invoice}/download', [InvoiceController::class, 'dow
 
 
 
+Route::post('/products/import', [ProductController::class, 'import'])
+    ->name('products.import');
 
 
 

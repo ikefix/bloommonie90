@@ -12,10 +12,22 @@ use App\Notifications\LowStockAlert;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PurchaseItem; // make sure this is at the top
 use Illuminate\Support\Str;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
 
+public function import(Request $request)
+{
+    $request->validate([
+        'excel_file' => 'required|file|mimes:xlsx,csv'
+    ]);
+
+    Excel::import(new ProductsImport, $request->file('excel_file'));
+
+    return back()->with('success', 'Products imported successfully 🚀');
+}
     
 
     public function store(Request $request)

@@ -16,6 +16,35 @@
             </div>
         @endif
 
+        {{-- Excel Import --}}
+        <form action="{{ route('products.import') }}" 
+            method="POST" 
+            enctype="multipart/form-data"
+            class="mb-4 p-3 border rounded bg-light">
+
+            @csrf
+
+            <h5 class="mb-3">📥 Import Products (Excel)</h5>
+
+            <div class="input-group">
+                <input 
+                    type="file" 
+                    name="excel_file" 
+                    class="form-control" 
+                    accept=".xlsx,.csv"
+                    required
+                >
+                <button class="btn btn-dark">
+                    Import Excel
+                </button>
+            </div>
+
+            <small class="text-muted d-block mt-2">
+                Excel headers must match DB columns (name, price, stock_quantity, etc.)
+            </small>
+        </form>
+
+
         <form action="{{ route('products.store') }}" method="POST" id="product-form">
             <h2>Add New Product</h2>
             @csrf

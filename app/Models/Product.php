@@ -12,17 +12,17 @@ class Product extends Model
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'category_id',
-        'shop_id',
-        'name',
-        'description',
-        'barcode', // ✅ Added this
-        'price',
-        'cost_price',
-        'stock_quantity',
-        'stock_limit',
-    ];
+protected $fillable = [
+    'name',
+    'barcode',
+    'price',
+    'cost_price',
+    'stock_quantity',
+    'stock_limit',
+    'category_id',
+    'shop_id',
+];
+
 
     public function category()
     {
