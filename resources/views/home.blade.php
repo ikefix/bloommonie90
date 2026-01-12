@@ -4,9 +4,19 @@
 
 @section('content')
 
+<style>
+    .stubborn{
+        display: inline;
+    }
+</style>
+
 <div class="container">
-    <h3 class="mb-3">Welcome {{ Auth::user()->name }}</h3>
-    <h2 class="mb-4">🧾 Cashier Sales</h2>
+
+    <div class="" style="display: flex; gap:1rem;">
+        
+        <h3 class="stubborn">Welcome {{ Auth::user()->name }}</h3>
+        <h2 class="stubborn"> Cashier Sales</h2>
+    </div>
 
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
@@ -26,11 +36,24 @@
     <form class="form" method="POST" action="{{ route('purchaseitem.store') }}">
         @csrf
 
-        <!-- 🧍 Customer Info -->
-        <div class="card mb-4">
+        {{-- <!-- 🧍 Customer Info -->
+        <div class="card">
             <div class="card-header fw-bold">👤 Customer Information</div>
             <div class="card-body">
                 <div class="row">
+                    
+                </div>
+            </div>
+        </div> --}}
+
+        <!-- 📦 Product Section -->
+        <div class="card">
+            <div class="card-header fw-bold">📦 Product Details</div>
+            <div class="card-body">
+
+
+                <div class="row">
+
                     <div class="col-md-6 mb-3">
                         <label>Customer Name (Optional)</label>
                         <input type="text" id="customer_name" class="form-control" placeholder="Full name">
@@ -39,29 +62,20 @@
                         <label>Customer Phone (Optional)</label>
                         <input type="text" id="customer_phone" class="form-control" placeholder="080xxxxxxxx">
                     </div>
-                </div>
-            </div>
-        </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label>Scan Barcode</label>
+                        <input type="text" id="barcode_input" class="form-control" placeholder="Scan barcode here" autofocus>
+                    </div>
 
-        <!-- 📦 Product Section -->
-        <div class="card mb-4">
-            <div class="card-header fw-bold">📦 Product Details</div>
-            <div class="card-body">
+                    <div class="col-md-4 mb-3">
+                        <label>Search Product</label>
+                        <input type="text" id="product_name" class="form-control" placeholder="Search product">
+                        <div id="product_suggestions" class="suggestions-box"></div>
+                    </div>
 
-                <div class="mb-3">
-                    <label>Scan Barcode</label>
-                    <input type="text" id="barcode_input" class="form-control" placeholder="Scan barcode here" autofocus>
-                </div>
+                    <input type="hidden" id="product">
 
-                <div class="mb-3">
-                    <label>Search Product</label>
-                    <input type="text" id="product_name" class="form-control" placeholder="Search product">
-                    <div id="product_suggestions" class="suggestions-box"></div>
-                </div>
-
-                <input type="hidden" id="product">
-
-                <div class="row">
                     <div class="col-md-4 mb-3">
                         <label>Price</label>
                         <input type="text" id="price" class="form-control" readonly>
@@ -76,45 +90,42 @@
                         <label>Total</label>
                         <input type="text" id="total_price" class="form-control" readonly>
                     </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>Payment Method</label>
+                                <select id="payment_method" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="card">Card</option>
+                                    <option value="transfer">Transfer</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label>Discount Type</label>
+                                <select id="discount_type" class="form-control">
+                                    <option value="none">None</option>
+                                    <option value="percentage">Percentage (%)</option>
+                                    <option value="flat">Flat (₦)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label>Discount Value</label>
+                                <input type="number" id="discount_value" class="form-control" value="0" min="0">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100">
+                            ➕ Add Product to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 💳 Payment & Discount -->
-        <div class="card mb-4">
-            <div class="card-header fw-bold">💳 Payment & Discount</div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label>Payment Method</label>
-                        <select id="payment_method" class="form-control">
-                            <option value="">Select</option>
-                            <option value="cash">Cash</option>
-                            <option value="card">Card</option>
-                            <option value="transfer">Transfer</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label>Discount Type</label>
-                        <select id="discount_type" class="form-control">
-                            <option value="none">None</option>
-                            <option value="percentage">Percentage (%)</option>
-                            <option value="flat">Flat (₦)</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label>Discount Value</label>
-                        <input type="number" id="discount_value" class="form-control" value="0" min="0">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-dark w-100">
-                    ➕ Add Product to Cart
-                </button>
-            </div>
-        </div>
     </form>
 
     <!-- 🛒 Preview -->
