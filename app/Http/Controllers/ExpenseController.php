@@ -63,11 +63,15 @@ public function index()
 
 
 
-    public function indexcash()
+public function indexcash()
 {
-    $expenses = Expense::latest()->paginate(10); // fetch with pagination
+    $expenses = Expense::where('added_by', Auth::user()->name)
+                        ->latest()
+                        ->paginate(10);
+
     return view('cashierexpense.index', compact('expenses'));
 }
+
 
 
 
