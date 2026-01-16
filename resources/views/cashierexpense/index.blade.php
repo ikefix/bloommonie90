@@ -26,7 +26,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="expensesTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -84,7 +84,7 @@ document.getElementById("downloadPDF").addEventListener("click", function () {
     doc.text("Date: {{ now()->format('F j, Y') }}", 14, 30);
 
     // Get table rows
-    const table = document.getElementById("salesTable");
+    const table = document.getElementById("expensesTable");
     const rows = [];
     const headers = [];
     

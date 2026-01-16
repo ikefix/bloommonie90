@@ -62,7 +62,7 @@
     }
 @endphp
 
-<h1 style="margin-bottom: 20px; font-size: 24px; color: #28a745; text-align:center;" class="total">
+<h1 id="totalSalesText" style="margin-bottom: 20px; font-size: 24px; color: #28a745; text-align:center;" class="total">
     Total Sales: ₦{{ number_format($grandTotal, 2) }}
 </h1>
 
@@ -123,57 +123,74 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
+<script>
+    window.PDF_DATA = {
+        cashierName: @json(Auth::user()->name),
+        date: @json(now()->format('F j, Y'))
+    };
+</script>
+
+
 <!-- ✅ PDF Generation Script -->
 <script>
-document.getElementById("downloadPDF").addEventListener("click", function () {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Add header
-    doc.setFontSize(16);
-    doc.text("Cashier Sales Report", 14, 15);
+    const { cashierName, date } = window.PDF_DATA;
 
-    // Cashier info
-    doc.setFontSize(11);
-    doc.text("Cashier: {{ Auth::user()->name }}", 14, 23);
-    doc.text("Date: {{ now()->format('F j, Y') }}", 14, 30);
-    doc.text("<h1 style="margin-bottom: 20px; font-size: 24px; color: #28a745; text-align:center;" class="total">
-    Total Sales: ₦{{ number_format($grandTotal, 2) }}
-</h1>")
+    document.getElementById("downloadPDF").addEventListener("click", function () {
 
-    // Get table rows
-    const table = document.getElementById("salesTable");
-    const rows = [];
-    const headers = [];
-    
-    table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
-    table.querySelectorAll("tbody tr").forEach(tr => {
-        const row = [];
-        tr.querySelectorAll("td").forEach(td => {
-            // Clean currency and remove special chars
-            let text = td.innerText.replace(/₦/g, "N"); // Replace ₦ with N for PDF
-            row.push(text);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Header
+        doc.setFontSize(16);
+        doc.text("Cashier Sales Report", 14, 15);
+
+        // Info
+        doc.setFontSize(11);
+        doc.text(`Cashier: ${cashierName}`, 14, 25);
+        doc.text(`Date: ${date}`, 14, 32);
+
+        // 🔥 GET TOTAL DIRECTLY FROM PAGE (NO BLADE, NO JS FORMAT)
+        const totalSalesText = document
+            .getElementById("totalSalesText")
+            .innerText
+            .trim();
+
+        doc.setFontSize(14);
+        doc.text(totalSalesText, 14, 42);
+
+        // Table
+        const table = document.getElementById("salesTable");
+        const headers = [];
+        const rows = [];
+
+        table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
+
+        table.querySelectorAll("tbody tr").forEach(tr => {
+            const row = [];
+            tr.querySelectorAll("td").forEach(td => {
+                row.push(td.innerText.replace(/₦/g, "N"));
+            });
+            rows.push(row);
         });
-        rows.push(row);
-    });
 
-    // Add table to PDF
-    doc.autoTable({
-        head: [headers],
-        body: rows,
-        startY: 40,
-        styles: {
-            fontSize: 10,
-            cellPadding: 2,
-        },
-        headStyles: { fillColor: [40, 40, 40] },
-        alternateRowStyles: { fillColor: [245, 245, 245] },
-    });
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            startY: 50,
+            styles: { fontSize: 9 },
+            headStyles: { fillColor: [40, 40, 40] },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+        });
 
-    // Save the file
-    doc.save("cashier_sales_{{ Auth::user()->name }}.pdf");
+        doc.save(`cashier_sales_${cashierName}.pdf`);
+    });
 });
 </script>
+
+
+
 
 
 <!-- ✅ Print Styling -->

@@ -34,6 +34,60 @@
     </div>
 </div>
 
+
+<!-- ✅ PDF Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+    document.getElementById("downloadPDF").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(16);
+    doc.text("Daily Sales Report", 14, 15);
+
+    // Total Sales (optional if you have a total element)
+    const totalElem = document.getElementById('totalSalesText');
+    if (totalElem) {
+        const totalText = totalElem.innerText.trim();
+        doc.setFontSize(14);
+        doc.text(totalText, 14, 25);
+    }
+
+    // Table
+    const table = document.querySelector("#sales-table #salesTable");
+    if (!table) {
+        alert("No sales table found. Please load sales first.");
+        return;
+    }
+
+    const headers = [];
+    const rows = [];
+
+    table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
+    table.querySelectorAll("tbody tr").forEach(tr => {
+        const row = [];
+        tr.querySelectorAll("td").forEach(td => row.push(td.innerText.replace(/₦/g, "N")));
+        rows.push(row);
+    });
+
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: totalElem ? 35 : 20, // leave space if total exists
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [40, 40, 40] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+    });
+
+    doc.save(`daily_sales.pdf`);
+});
+
+</script>
+
+
 <!-- JS for filtering -->
 <script>
 const searchInput = document.getElementById('search-input');

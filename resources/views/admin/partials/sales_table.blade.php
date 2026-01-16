@@ -9,7 +9,7 @@
     Total Sales: ₦{{ number_format($grandTotal, 2) }}
 </h1>
 
-<table class="table table-bordered">
+<table class="table table-bordered" id="salesTable">
     <thead>
         <tr>
             <th>#</th>

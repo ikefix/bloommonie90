@@ -3,30 +3,25 @@
 @section('managercontent')
 <div class="container">
         
+<div class="container">
+    <h3><i class='bx bx-dollar' ></i> Expenses List</h3>
+
     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
-    <h3>💰 Expenses List</h3>
+    <h3></h3>
         <div>
             <button id="downloadPDF" class="btn btn-success btn-sm">📥 Download PDF</button>
             <button onclick="window.print()" class="btn btn-primary btn-sm">🖨️ Print</button>
         </div>
     </div>
 
-    <!-- ✅ Report Header -->
-    <div class="mb-4 text-center">
-        <h4><strong>Cashier Sales Report</strong></h4>
-        <p>
-            <strong>Cashier:</strong> {{ Auth::user()->name }} <br>
-            <strong>Date:</strong> {{ now()->format('F j, Y') }}
-        </p>
-    </div>
 
-    <a href="{{ route('cashierexpense.create') }}" class="btn btn-primary mb-3 no-print">+ Add Expense</a>
+    <a href="{{ route('managerexpense.create') }}" class="btn btn-primary mb-3 no-print">+ Add Expense</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="expensesTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -84,7 +79,7 @@ document.getElementById("downloadPDF").addEventListener("click", function () {
     doc.text("Date: {{ now()->format('F j, Y') }}", 14, 30);
 
     // Get table rows
-    const table = document.getElementById("salesTable");
+    const table = document.getElementById("expensesTable");
     const rows = [];
     const headers = [];
     
