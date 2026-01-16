@@ -1,6 +1,6 @@
-@extends('layouts.managerapp')
+@extends('layouts.app')
 
-@section('managercontent')
+@section('content')
 <div class="container">
     <h3>➕ Add New Expense</h3>
 

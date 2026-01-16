@@ -12,10 +12,9 @@
 
 <div class="container">
 
-    <div class="" style="display: flex; gap:1rem;">
-        
+    <div style="display:flex; gap:1rem;">
         <h3 class="stubborn">Welcome {{ Auth::user()->name }}</h3>
-        <h2 class="stubborn"> Cashier Sales</h2>
+        <h2 class="stubborn">Cashier Sales</h2>
     </div>
 
     @if(session('error'))
@@ -36,100 +35,101 @@
     <form class="form" method="POST" action="{{ route('purchaseitem.store') }}">
         @csrf
 
-        {{-- <!-- 🧍 Customer Info -->
-        <div class="card">
-            <div class="card-header fw-bold">👤 Customer Information</div>
-            <div class="card-body">
-                <div class="row">
-                    
-                </div>
-            </div>
-        </div> --}}
-
         <!-- 📦 Product Section -->
         <div class="card">
             <div class="card-header fw-bold">📦 Product Details</div>
+
             <div class="card-body">
 
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
+                <!-- 👤 Customer Info -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
                         <label>Customer Name (Optional)</label>
-                        <input type="text" id="customer_name" class="form-control" placeholder="Full name">
+                        <input type="text" id="customer_name" class="form-control">
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6">
                         <label>Customer Phone (Optional)</label>
-                        <input type="text" id="customer_phone" class="form-control" placeholder="080xxxxxxxx">
+                        <input type="text" id="customer_phone" class="form-control">
                     </div>
-                    
-                    <div class="col-md-4 mb-3">
+                </div>
+
+                <!-- 🔍 SCANNER ROW (DO NOT TOUCH THIS STRUCTURE AGAIN) -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
                         <label>Scan Barcode</label>
-                        <input type="text" id="barcode_input" class="form-control" placeholder="Scan barcode here" autofocus>
+                        <input
+                            type="text"
+                            id="barcode_input"
+                            class="form-control"
+                            placeholder="Scan barcode here"
+                            autofocus
+                        >
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4">
                         <label>Search Product</label>
-                        <input type="text" id="product_name" class="form-control" placeholder="Search product">
+                        <input type="text" id="product_name" class="form-control">
                         <div id="product_suggestions" class="suggestions-box"></div>
                     </div>
 
-                    <input type="hidden" id="product">
-
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4">
                         <label>Price</label>
                         <input type="text" id="price" class="form-control" readonly>
                     </div>
+                </div>
 
-                    <div class="col-md-4 mb-3">
+                <input type="hidden" id="product">
+
+                <!-- 📊 Quantity + Total -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
                         <label>Quantity</label>
                         <input type="number" id="quantity" class="form-control" min="1">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4">
                         <label>Total</label>
                         <input type="text" id="total_price" class="form-control" readonly>
                     </div>
+                </div>
 
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label>Payment Method</label>
-                                <select id="payment_method" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="card">Card</option>
-                                    <option value="transfer">Transfer</option>
-                                </select>
-                            </div>
+                <!-- 💳 Payment + Discount -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label>Payment Method</label>
+                        <select id="payment_method" class="form-control">
+                            <option value="">Select</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="transfer">Transfer</option>
+                        </select>
+                    </div>
 
-                            <div class="col-md-4 mb-3">
-                                <label>Discount Type</label>
-                                <select id="discount_type" class="form-control">
-                                    <option value="none">None</option>
-                                    <option value="percentage">Percentage (%)</option>
-                                    <option value="flat">Flat (₦)</option>
-                                </select>
-                            </div>
+                    <div class="col-md-4">
+                        <label>Discount Type</label>
+                        <select id="discount_type" class="form-control">
+                            <option value="none">None</option>
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="flat">Flat (₦)</option>
+                        </select>
+                    </div>
 
-                            <div class="col-md-4 mb-3">
-                                <label>Discount Value</label>
-                                <input type="number" id="discount_value" class="form-control" value="0" min="0">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-dark w-100">
-                            ➕ Add Product to Cart
-                        </button>
+                    <div class="col-md-4">
+                        <label>Discount Value</label>
+                        <input type="number" id="discount_value" class="form-control" value="0" min="0">
                     </div>
                 </div>
+
+                <button type="submit" class="btn btn-dark w-100">
+                    ➕ Add Product to Cart
+                </button>
+
             </div>
         </div>
-
     </form>
 
     <!-- 🛒 Preview -->
-    <div id="preview-box" class="card d-none">
+    <div id="preview-box" class="card d-none mt-4">
         <div class="card-header fw-bold">🛒 Cart Preview</div>
         <div class="card-body"></div>
 
@@ -137,7 +137,9 @@
             @csrf
         </form>
     </div>
+
 </div>
+
 
 <script>
 let productsList = [];
@@ -187,14 +189,40 @@ function showPrompt(message, type = 'info') {
 }
 
 /* ✅ Detect Barcode Scanning */
-barcodeInput.addEventListener('keydown', () => {
+barcodeInput.addEventListener('keydown', (e) => {
+
+    // 🔥 THIS IS THE IMPORTANT PART
+    if (e.key === 'Enter') {
+        e.preventDefault();   // stop form submit
+        return false;
+    }
+
     if (!scanningActive) {
         scanningActive = true;
         showPrompt('🔍 Scanning in progress...', 'info');
     }
+
     clearTimeout(scanningTimer);
     scanningTimer = setTimeout(() => scanningActive = false, 800);
 });
+
+function findCartItem(productId) {
+    return productsList.findIndex(p => p.productId == productId);
+}
+
+function increaseCartQty(index, amount = 1) {
+    if (!productsList[index]) return;
+
+    if (productsList[index].quantity + amount > productsList[index].stock) {
+        showPrompt('⚠️ Stock limit reached', 'error');
+        return;
+    }
+
+    productsList[index].quantity += amount;
+    updateCartPreview();
+}
+
+
 
 /* ✅ Handle Barcode / Manual Input */
 barcodeInput.addEventListener('input', () => {
@@ -208,14 +236,26 @@ barcodeInput.addEventListener('input', () => {
             const data = await res.json();
 
             if (data.success && data.name) {
-                document.querySelector('#product_name').value = data.name;
-                document.querySelector('#product').value = data.id;
-                document.querySelector('#price').value = data.price;
-                document.querySelector('#quantity').value = 1;
-                document.querySelector('#total_price').value = data.price;
-                showPrompt(`✅ ${data.name} loaded successfully!`, 'success');
-                barcodeInput.value = '';
-                return;
+                const index = findCartItem(data.id);
+
+    if (index !== -1) {
+        // 🔁 Product already in cart → increase qty
+        increaseCartQty(index, 1);
+        showPrompt(`➕ ${data.name} quantity increased`, 'success');
+    } else {
+        // 🧠 Not in cart → just fill the form
+        document.querySelector('#product_name').value = data.name;
+        document.querySelector('#product').value = data.id;
+        document.querySelector('#price').value = data.price;
+        document.querySelector('#quantity').value = 1;
+        document.querySelector('#total_price').value = data.price;
+
+        showPrompt(`✅ ${data.name} loaded. Click Add Product`, 'info');
+    }
+
+    barcodeInput.value = '';
+    return;
+
             }
 
             if (Array.isArray(data) && data.length > 0) {
@@ -332,13 +372,16 @@ function updateCartPreview() {
                 <p class="mb-1"><strong>${item.name}</strong></p>
                 <p class="mb-0">₦${item.price.toFixed(2)} × ${item.quantity} - Discount: ₦${discountAmount.toFixed(2)}</p>
             </div>
-            <div class="d-flex flex-column align-items-end">
+            <div class="d-flex align-items-end">
                 <select class="form-control form-control-sm mb-2 payment-select" data-index="${index}">
                     <option value="cash" ${item.paymentMethod==='cash'?'selected':''}>Cash</option>
                     <option value="card" ${item.paymentMethod==='card'?'selected':''}>Card</option>
                     <option value="transfer" ${item.paymentMethod==='transfer'?'selected':''}>Transfer</option>
                 </select>
                 <button type="button" class="btn btn-sm btn-danger remove-btn" data-index="${index}">❌ Remove</button>
+            </div>
+            <div class="d-flex mb-2">
+                <span style="margin:0 10px;font-weight:bold">${item.quantity}</span>
             </div>
         `;
         previewBody.appendChild(itemDiv);
