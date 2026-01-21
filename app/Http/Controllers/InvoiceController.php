@@ -171,24 +171,52 @@ public function generateShareLink(Invoice $invoice)
 
 
 // InvoiceController.php
+// public function owing()
+// {
+//     if (!in_array(Auth::user()->role, ['admin', 'manager'])) {
+//         abort(403);
+//     }
+
+//     // Fetch all invoices where payment_status = owing
+//     $invoices = Invoice::with('customer', 'shop')
+//                 ->whereIn('payment_status', ['paid', 'owing'])
+//                 ->orderBy('invoice_date', 'desc')
+//                 ->get();
+
+//     if (Auth::user()->role === 'admin') {
+//         return view('admin.invoices.owing', compact('invoices'));
+//     } else {
+//         return view('manager.invoices.owing', compact('invoices'));
+//     }
+// }
+
 public function owing()
 {
     if (!in_array(Auth::user()->role, ['admin', 'manager'])) {
         abort(403);
     }
 
-    // Fetch all invoices where payment_status = owing
+    // Dashboard stats: ONLY owing invoices
+    $owingInvoices = Invoice::with('customer', 'shop')
+        ->where('payment_status', 'owing')
+        ->orderBy('invoice_date', 'desc')
+        ->get();
+
+    // Table data: ALL invoices (paid + owing)
     $invoices = Invoice::with('customer', 'shop')
-                ->whereIn('payment_status', ['paid', 'owing'])
-                ->orderBy('invoice_date', 'desc')
-                ->get();
+        ->orderBy('invoice_date', 'desc')
+        ->get();
+
+    // Total invoice count
+    $totalInvoices = Invoice::count();
 
     if (Auth::user()->role === 'admin') {
-        return view('admin.invoices.owing', compact('invoices'));
+        return view('admin.invoices.owing', compact('owingInvoices', 'invoices', 'totalInvoices'));
     } else {
-        return view('manager.invoices.owing', compact('invoices'));
+        return view('manager.invoices.owing', compact('owingInvoices', 'invoices', 'totalInvoices'));
     }
 }
+
 
 
 
