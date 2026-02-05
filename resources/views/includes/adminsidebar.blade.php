@@ -55,6 +55,22 @@
                 <span class="sidebar-icon"><i class='bx bxs-store' ></i></span>
                 <span class="sidebar-text">Shops</span>
             </a>
+            <a class="sidebar-link collapsible-btn" onclick="toggleSubmenu(this)">
+                <span class="sidebar-icon"><i class='bx bx-layer'></i></span>
+                <span class="sidebar-text">Report</span>
+                <span class="arrow">&#9662;</span> <!-- down arrow -->
+            </a>
+            <div class="submenu"> 
+                 
+                 <a href="{{route('admin.report.sales_report')}}" class="sidebar-link">
+                    <span class="sidebar-icon"><i class='bx bx-package'></i></span>
+                    <span class="sidebar-text">Sales Report</span>
+                </a>
+                <a href="{{ route('categories.create') }}" class="sidebar-link">
+                    <span class="sidebar-icon"><i class='bx bx-category'></i></span>
+                    <span class="sidebar-text">Categories</span>
+                </a>
+            </div>
             <a href="{{route('stock-transfers.create')}}" class="sidebar-link">
                 <span class="sidebar-icon"><i class='bx bx-transfer'></i></span>
                 <span class="sidebar-text">Stock Transfer</span>

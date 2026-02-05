@@ -14,6 +14,7 @@ use App\Http\Controllers\StockTransferController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\SalesReportController;
 use Milon\Barcode\DNS1D;
 use App\Models\Product;
 
@@ -404,3 +405,15 @@ Route::prefix('manager')->middleware(['auth','role:manager'])->group(function ()
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('manager.invoices.store');
 });
 
+
+
+// SALES REPORT
+Route::prefix('admin')
+    ->middleware(['auth', 'admin'])
+    ->group(function () {
+
+        Route::get('/report/sales-report', 
+            [SalesReportController::class, 'index']
+        )->name('admin.report.sales_report');
+
+    });
