@@ -28,13 +28,14 @@
             <label class="form-label">Shop</label>
             <select name="shop_id" class="form-select">
                 <option value="">All Shops</option>
-                @foreach($shops ?? [] as $shop)
+                @foreach($shops as $shop)
                     <option value="{{ $shop->id }}"
                         {{ request('shop_id') == $shop->id ? 'selected' : '' }}>
                         {{ $shop->name }}
                     </option>
                 @endforeach
             </select>
+
         </div>
 
         <div class="col-md-3 d-grid">

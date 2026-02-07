@@ -66,9 +66,9 @@
                     <span class="sidebar-icon"><i class='bx bx-package'></i></span>
                     <span class="sidebar-text">Sales Report</span>
                 </a>
-                <a href="{{ route('categories.create') }}" class="sidebar-link">
+                <a href="{{route('admin.report.stock_report')}}" class="sidebar-link">
                     <span class="sidebar-icon"><i class='bx bx-category'></i></span>
-                    <span class="sidebar-text">Categories</span>
+                    <span class="sidebar-text">Stock Report</span>
                 </a>
             </div>
             <a href="{{route('stock-transfers.create')}}" class="sidebar-link">

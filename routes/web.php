@@ -15,6 +15,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SalesReportController;
+use App\Http\Controllers\StockReportController;
 use Milon\Barcode\DNS1D;
 use App\Models\Product;
 
@@ -417,3 +418,9 @@ Route::prefix('admin')
         )->name('admin.report.sales_report');
 
     });
+
+
+// STOCK REPORT
+
+Route::get('/admin/reports/stock', [StockReportController::class, 'index'])
+    ->name('admin.report.stock_report');
