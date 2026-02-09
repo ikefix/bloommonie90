@@ -43,6 +43,16 @@
         <div class="col-md-2 d-grid">
             <button class="btn btn-primary">Apply</button>
         </div>
+
+        <div class="col-md-2 d-grid">
+    <a
+        href="{{ route('admin.stock.report.pdf', request()->query()) }}"
+        class="btn btn-dark"
+    >
+        <i class="bi bi-download"></i> Download PDF
+    </a>
+</div>
+
     </form>
 
     {{-- SUMMARY CARDS + CHART INLINE --}}

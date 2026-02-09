@@ -424,3 +424,10 @@ Route::prefix('admin')
 
 Route::get('/admin/reports/stock', [StockReportController::class, 'index'])
     ->name('admin.report.stock_report');
+
+
+// routes/web.php
+Route::get(
+    '/admin/stock-report/pdf',
+    [StockReportController::class, 'downloadPdf']
+)->name('admin.stock.report.pdf');
