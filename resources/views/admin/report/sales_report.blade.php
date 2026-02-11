@@ -42,6 +42,16 @@
             <button class="btn btn-primary">Apply Filter</button>
         </div>
 
+        <div class="col-md-3 d-grid">
+            <a
+                href="{{ route('admin.report.sales_report.pdf', request()->query()) }}"
+                class="btn btn-dark"
+            >
+                <i class="bi bi-download"></i> Download PDF
+            </a>
+        </div>
+
+
     </form>
 
     {{-- SUMMARY CARDS --}}

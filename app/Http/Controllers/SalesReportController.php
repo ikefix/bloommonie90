@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\PurchaseItem;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Shop;
+
 
 class SalesReportController extends Controller
 {
@@ -103,6 +105,64 @@ public function index(Request $request)
         // Chart (ZERO-SALES DAYS INCLUDED ✅)
         'salesByDay' => $salesByDay,
     ]);
+}
+
+
+public function downloadPdf(Request $request)
+{
+    $startDate = $request->start_date;
+    $endDate   = $request->end_date;
+    $shopId    = $request->shop_id;
+
+    // BASE QUERY — REAL SALES TABLE
+    $query = DB::table('purchase_items')
+        ->join('products', 'purchase_items.product_id', '=', 'products.id')
+        ->join('shops', 'purchase_items.shop_id', '=', 'shops.id');
+
+    // DATE FILTER
+    if ($startDate && $endDate) {
+        $query->whereBetween('purchase_items.created_at', [
+            $startDate . ' 00:00:00',
+            $endDate . ' 23:59:59'
+        ]);
+    }
+
+    // SHOP FILTER
+    if ($shopId) {
+        $query->where('purchase_items.shop_id', $shopId);
+    }
+
+    // TOP PRODUCTS
+    $topProducts = (clone $query)
+        ->select(
+            'products.name as product_name',
+            DB::raw('SUM(purchase_items.quantity) as total_sold')
+        )
+        ->groupBy('products.name')
+        ->orderByDesc('total_sold')
+        ->get();
+
+    // TOTAL SALES
+    $totalSales = (clone $query)->sum('purchase_items.total_price');
+
+    // TOTAL TRANSACTIONS
+    $totalTransactions = (clone $query)
+        ->select('purchase_items.transaction_id')
+        ->distinct()
+        ->count();
+
+    $shop = $shopId ? Shop::find($shopId) : null;
+
+    $pdf = Pdf::loadView('admin.report.sales_report_pdf', compact(
+        'topProducts',
+        'totalSales',
+        'totalTransactions',
+        'startDate',
+        'endDate',
+        'shop'
+    ))->setPaper('a4', 'portrait');
+
+    return $pdf->download('sales_report.pdf');
 }
 
 

@@ -419,6 +419,11 @@ Route::prefix('admin')
 
     });
 
+Route::get(
+    '/admin/reports/sales-report/pdf',
+    [SalesReportController::class, 'downloadPdf']
+)->name('admin.report.sales_report.pdf');
+
 
 // STOCK REPORT
 
@@ -431,3 +436,5 @@ Route::get(
     '/admin/stock-report/pdf',
     [StockReportController::class, 'downloadPdf']
 )->name('admin.stock.report.pdf');
+
+
