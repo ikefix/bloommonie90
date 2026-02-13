@@ -30,9 +30,10 @@ class ProfitReportController extends Controller
             ->get();
 
         // 💰 Revenue (after discount)
-        $totalRevenue = $sales->sum(fn ($i) =>
-            $i->total_price - ($i->discount_value ?? 0)
-        );
+$totalRevenue = PurchaseItem::whereDate('created_at', $startDate)
+    ->when($shopId, fn ($q) => $q->where('shop_id', $shopId))
+    ->sum(DB::raw('total_price - discount_value'));
+
 
         // 📦 Cost of Goods
         $totalCost = $sales->sum(fn ($i) =>
