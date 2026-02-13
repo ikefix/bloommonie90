@@ -309,7 +309,12 @@ public function cashiersales(Request $request)
         ->orderBy('created_at', 'desc')
         ->get();
 
-    return view('cashier.home-sales', compact('sales'));
+    if (auth()->user()->role === 'cashier') {
+        return view('cashier.home-sales', compact('sales'));
+    }
+
+    return view('receipts.receipt', compact('sales'));
+
 }
 
 

@@ -60,6 +60,8 @@
             <p>Cashier: {{ $cashier }}</p>
             <p>Transaction ID: {{ $items->first()->transaction_id }}</p>
             <p>Date: {{ $items->first()->created_at->format('Y-m-d H:i') }}</p>
+            <p>Customer Name: {{ $items->first()->customer_name ?? 'Unfilled Value' }}</p>
+            <p>Customer Phone: {{ $items->first()->customer_phone ?? 'Empty' }}</p>    
         </div>
 
         <hr>

@@ -110,7 +110,7 @@
                     <td>{{ $sale->shop->name ?? 'Unknown Shop' }}</td>
                     <td>{{ $sale->transaction_id ?? 'Unknown Transaction' }}</td>
                     <td>{{ $sale->discount_value ?? 'Unknown Transaction' }}</td>
-                    <td>{{ $sale->customer_name ?? 'Unknown Transaction' }}</td>
+                    <td>{{ $sale->customer_name ?? 'Empty' }}</td>
                     <td>{{ $sale->customer_phone ?? 'Empty' }}</td>       
                     <td>{{ $sale->sale_type }}</td>
                 </tr>
