@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\PurchaseItem;
 use App\Models\Expense;
 use App\Models\Shop;
@@ -31,10 +30,9 @@ class ProfitReportController extends Controller
             ->get();
 
         // 💰 Revenue (after discount)
-$totalRevenue = PurchaseItem::whereDate('created_at', $startDate)
-    ->when($shopId, fn ($q) => $q->where('shop_id', $shopId))
-    ->sum(DB::raw('total_price - discount_value'));
-
+        $totalRevenue = $sales->sum(fn ($i) =>
+            $i->total_price - ($i->discount_value ?? 0)
+        );
 
         // 📦 Cost of Goods
         $totalCost = $sales->sum(fn ($i) =>
