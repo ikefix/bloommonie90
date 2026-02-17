@@ -441,3 +441,6 @@ Route::get(
 
 Route::get('/admin/report/profit-loss', [ProfitReportController::class, 'profitLoss'])
     ->name('admin.report.profit_loss');
+
+
+Route::get('/admin/report/profit-loss/download',[ProfitReportController::class, 'downloadProfitGoodsPdf'])->name('admin.report.profit_loss.download');

@@ -8,6 +8,7 @@ use App\Models\PurchaseItem;
 use App\Models\Expense;
 use App\Models\Shop;
 use App\Models\Category;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProfitReportController extends Controller
 {
@@ -126,4 +127,49 @@ $profitByDay = collect($period)->map(function($date) use ($rawSales, $rawExpense
     'sales' // 👈 add this
         ));
     }
+
+
+
+
+
+
+public function downloadProfitGoodsPdf(Request $request)
+{
+    $sales = PurchaseItem::with('product')
+        ->when($request->start_date, fn ($q) =>
+            $q->whereDate('created_at', '>=', $request->start_date)
+        )
+        ->when($request->end_date, fn ($q) =>
+            $q->whereDate('created_at', '<=', $request->end_date)
+        )
+        ->when($request->shop_id, fn ($q) =>
+            $q->where('shop_id', $request->shop_id)
+        )
+        ->get();
+
+    $goodsByProfit = $sales
+        ->groupBy(fn ($item) => $item->product->name)
+        ->map(fn ($items, $name) => [
+            'product'  => $name,
+            'quantity' => $items->sum('quantity'),
+            'revenue'  => $items->sum(fn ($i) =>
+                $i->total_price - ($i->discount_value ?? 0)
+            ),
+            'cost'     => $items->sum(fn ($i) =>
+                ($i->product->cost_price ?? 0) * $i->quantity
+            ),
+        ])
+        ->map(fn ($item) => array_merge($item, [
+            'profit' => $item['revenue'] - $item['cost']
+        ]))
+        ->filter(fn ($item) => $item['profit'] > 0);
+
+    $pdf = Pdf::loadView(
+        'admin.report.pdf.goods_profit',
+        compact('goodsByProfit', 'request')
+    );
+
+    return $pdf->download('goods-that-made-profit.pdf');
+}
+
 }

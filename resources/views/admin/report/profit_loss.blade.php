@@ -145,9 +145,18 @@
 
     {{-- EXPENSE BREAKDOWN --}}
     <div class="card shadow-sm mt-4">
-    <div class="card-header">
-        <strong>Goods That Made Profit</strong>
-    </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Goods That Made Profit</strong>
+
+            <a
+                href="{{ route('admin.report.profit_loss.download', request()->query()) }}"
+                class="btn btn-sm btn-danger"
+                target="_blank"
+            >
+                Download PDF
+            </a>
+        </div>
+
     <div class="card-body p-0">
         <table class="table table-striped table-hover mb-0">
             <thead>
