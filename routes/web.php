@@ -19,7 +19,7 @@ use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\ProfitReportController;
 use Milon\Barcode\DNS1D;
 use App\Models\Product;
-
+use App\Http\Controllers\ComplaintController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -451,3 +451,11 @@ Route::get('/admin/report/profit-loss', [ProfitReportController::class, 'profitL
 
 
 Route::get('/admin/report/profit-loss/download',[ProfitReportController::class, 'downloadProfitGoodsPdf'])->name('admin.report.profit_loss.download');
+
+
+// Route::post('/complaints', [ComplaintController::class, 'store'])
+//     ->middleware('auth');
+
+Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
+
+Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');

@@ -47,7 +47,10 @@ public function shop()
     return $this->belongsTo(Shop::class);
 }
 
-
+public function complaints()
+{
+    return $this->hasMany(Complaint::class);
+}
     
 }
 

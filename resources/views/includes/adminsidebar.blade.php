@@ -144,6 +144,10 @@
                     <span class="sidebar-text">Add Staff</span>
                 </a>
             </div>
+            <a href="{{ route('complaints.create') }}" class="sidebar-link">
+                <span class="sidebar-icon"><i class='bx bx-user-circle'></i></span>
+                <span class="sidebar-text">Customer Care</span>
+            </a>
             <a href="{{ route('admin.profile') }}" class="sidebar-link">
                 <span class="sidebar-icon"><i class='bx bx-user-circle'></i></span>
                 <span class="sidebar-text">Profile</span>
