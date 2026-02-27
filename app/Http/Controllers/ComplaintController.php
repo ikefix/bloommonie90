@@ -48,7 +48,7 @@ public function store(Request $request)
         'image' => $imagePath
     ]);
 
-    Mail::to('willsharches@gmail.com')
+    Mail::to('omekeikechukwu877@gmail.com')
         ->send(new ComplaintMail($complaint));
 
     return back()->with('success', 'Complaint submitted');
