@@ -7,16 +7,55 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
-    protected $fillable = ['user_id', 'name', 'location'];
+    use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'location', 
+        'owner_id', // 🔥 IMPORTANT
+        'user_id',
+    ];
+
+    /*
+    |-------------------------------------------------
+    | TENANT ISOLATION
+    |-------------------------------------------------
+    */
+    protected static function booted()
+    {
+        static::addGlobalScope('owner', function ($query) {
+            $user = auth()->user();
+
+            if ($user && $user->role !== 'superadmin') {
+                $ownerId = $user->owner_id ?? $user->id;
+                $query->where('owner_id', $ownerId);
+            }
+        });
+
+        static::creating(function ($model) {
+            $user = auth()->user();
+
+            if ($user) {
+                $model->owner_id = $user->owner_id ?? $user->id;
+            }
+        });
+    }
+
+    /*
+    |-------------------------------------------------
+    | RELATIONSHIPS
+    |-------------------------------------------------
+    */
+
+    // the owner (admin/client)
     public function owner()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'shop_id');
     }
 
     public function stockTransfers()
@@ -24,17 +63,8 @@ class Shop extends Model
         return $this->hasMany(StockTransfer::class, 'to_shop_id');
     }
 
-    // app/Models/Shop.php
-        public function user()
-        {
-            return $this->belongsTo(User::class);
-        }
-
-            public function purchases()
+    public function purchases()
     {
         return $this->hasMany(PurchaseItem::class);
     }
-
-
 }
-

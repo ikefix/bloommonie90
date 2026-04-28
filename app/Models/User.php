@@ -51,6 +51,15 @@ public function complaints()
 {
     return $this->hasMany(Complaint::class);
 }
+
+protected static function booted()
+{
+    static::creating(function ($user) {
+        if (auth()->check()) {
+            $user->owner_id = auth()->user()->owner_id ?? auth()->id();
+        }
+    });
+}
     
 }
 

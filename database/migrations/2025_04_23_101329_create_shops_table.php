@@ -18,11 +18,13 @@ return new class extends Migration
 
             // 🔐 SaaS OWNERSHIP (IMPORTANT)
             $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('user_id'); // The customer or owner
 
             $table->string('name');
             $table->string('location')->nullable();
 
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
         
     }

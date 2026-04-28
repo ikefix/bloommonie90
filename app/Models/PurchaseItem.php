@@ -13,25 +13,54 @@ class PurchaseItem extends Model
         'product_id',
         'category_id',
         'shop_id',
+        'owner_id', // 🔥 IMPORTANT ADDITION
+
         'quantity',
         'total_price',
         'payment_method',
         'transaction_id',
-        'discount_type',      // 🆕 Added
-        'discount_value',     // 🆕 Added
-        'discount',           // 🆕 Added
-        'cashier_id', // ← add this
-           // 🧍 Customer (optional)
+        'discount_type',
+        'discount_value',
+        'discount',
+        'cashier_id',
+
         'customer_name',
         'customer_phone',
-        
-        // 🔥 THIS IS THE MISSING PIECE
+
         'sale_type',
     ];
 
-    /**
-     * Relationships
-     */
+    /*
+    |-------------------------------------------------
+    | TENANT ISOLATION (GLOBAL SCOPE)
+    |-------------------------------------------------
+    */
+    protected static function booted()
+    {
+        static::addGlobalScope('owner', function ($query) {
+            $user = auth()->user();
+
+            if ($user && $user->role !== 'superadmin') {
+                $ownerId = $user->owner_id ?? $user->id;
+                $query->where('owner_id', $ownerId);
+            }
+        });
+
+        static::creating(function ($model) {
+            $user = auth()->user();
+
+            if ($user) {
+                $model->owner_id = $user->owner_id ?? $user->id;
+            }
+        });
+    }
+
+    /*
+    |-------------------------------------------------
+    | RELATIONSHIPS
+    |-------------------------------------------------
+    */
+
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -47,42 +76,45 @@ class PurchaseItem extends Model
         return $this->belongsTo(Shop::class);
     }
 
-        public function cashier()
+    public function cashier()
     {
         return $this->belongsTo(User::class, 'cashier_id');
     }
 
+    /*
+    |-------------------------------------------------
+    | ACCESSORS
+    |-------------------------------------------------
+    */
 
-    /**
-     * Accessor: Calculate final price after discount
-     */
     public function getFinalPriceAttribute()
     {
         return $this->total_price - $this->discount;
     }
 
+    /*
+    |-------------------------------------------------
+    | BUSINESS LOGIC
+    |-------------------------------------------------
+    */
 
     public static function calculateTotalSales($date = null, $search = null)
-{
-    $query = self::query();
+    {
+        $query = self::query();
 
-    // Filter by date
-    if ($date) {
-        $query->whereDate('created_at', $date);
-    }
+        if ($date) {
+            $query->whereDate('created_at', $date);
+        }
 
-    // Filter by search term
-    if ($search) {
-        $query->whereHas('product', function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%");
+        if ($search) {
+            $query->whereHas('product', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->get()->sum(function ($sale) {
+            $discounted = $sale->total_price - ($sale->discount ?? 0);
+            return max($discounted, 0);
         });
     }
-
-    // Sum total sales after discount
-    return $query->get()->sum(function ($sale) {
-        $discounted = $sale->total_price - ($sale->discount ?? 0);
-        return max($discounted, 0); // avoid negative values
-    });
-}
-
 }

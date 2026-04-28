@@ -45,7 +45,7 @@ protected function redirectTo()
 
     // ❌ NOT ACTIVATED → force product key
     if (!$user->is_activated) {
-        return '/product-key';
+        return '/show-product-key';
     }
 
     // ✅ ACTIVATED → go by role

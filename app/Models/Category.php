@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Models;
 
@@ -9,11 +9,43 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = [
+        'name',
+        'description',
+        'owner_id', // 🔥 IMPORTANT
+    ];
 
-    /**
-     * Define the relationship between Category and Product
-     */
+    /*
+    |-------------------------------------------------
+    | TENANT ISOLATION
+    |-------------------------------------------------
+    */
+    protected static function booted()
+    {
+        static::addGlobalScope('owner', function ($query) {
+            $user = auth()->user();
+
+            if ($user && $user->role !== 'superadmin') {
+                $ownerId = $user->owner_id ?? $user->id;
+                $query->where('owner_id', $ownerId);
+            }
+        });
+
+        static::creating(function ($model) {
+            $user = auth()->user();
+
+            if ($user) {
+                $model->owner_id = $user->owner_id ?? $user->id;
+            }
+        });
+    }
+
+    /*
+    |-------------------------------------------------
+    | RELATIONSHIPS
+    |-------------------------------------------------
+    */
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -31,4 +63,5 @@ class Category extends Model
     {
         return $this->hasMany(StockTransfer::class, 'to_shop_id');
     }
+
 }

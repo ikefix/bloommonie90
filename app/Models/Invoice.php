@@ -11,84 +11,111 @@ class Invoice extends Model
         'customer_id',
         'user_id',
         'shop_id',
+        'owner_id', // 🔥 IMPORTANT ADDITION
+
         'invoice_number',
         'invoice_date',
         'goods',
+
         'discount',
         'tax',
         'total',
-        'payment_type',    // ✅ add this
-        'amount_paid',     // ✅ add this
-        'balance',         // ✅ add this
-        'payment_status',  // ✅ add this
+
+        'payment_type',
+        'amount_paid',
+        'balance',
+        'payment_status',
     ];
 
+    /*
+    |-------------------------------------------------
+    | TENANT ISOLATION
+    |-------------------------------------------------
+    */
+    protected static function booted()
+    {
+        static::addGlobalScope('owner', function ($query) {
+            $user = auth()->user();
 
-public function getProductNameAttribute()
-{
-    $goods = $this->goods; // already an array thanks to $casts
+            if ($user && $user->role !== 'superadmin') {
+                $ownerId = $user->owner_id ?? $user->id;
+                $query->where('owner_id', $ownerId);
+            }
+        });
 
-    if (empty($goods)) {
-        return 'Unknown Product';
+        static::creating(function ($model) {
+            $user = auth()->user();
+
+            if ($user) {
+                $model->owner_id = $user->owner_id ?? $user->id;
+            }
+        });
     }
 
-    // Check if single product (associative array with 'product_id')
-    if (isset($goods['product_id'])) {
-        return Product::where('id', $goods['product_id'])->value('name') ?? 'Unknown Product';
-    }
-
-    // Multiple products (indexed array)
-    $productIds = array_column($goods, 'product_id');
-    $names = Product::whereIn('id', $productIds)->pluck('name')->toArray();
-
-    return implode(', ', $names);
-}
-
-
-
-    
-
+    /*
+    |-------------------------------------------------
+    | CASTS
+    |-------------------------------------------------
+    */
     protected $casts = [
         'goods' => 'array',
     ];
 
-    public function customer() {
+    /*
+    |-------------------------------------------------
+    | RELATIONSHIPS
+    |-------------------------------------------------
+    */
+
+    public function customer()
+    {
         return $this->belongsTo(Customer::class);
     }
 
-    public function creator() {
+    public function creator()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function shop() {
+    public function shop()
+    {
         return $this->belongsTo(Shop::class);
     }
 
-    public function user()
+    /*
+    |-------------------------------------------------
+    | ACCESSORS
+    |-------------------------------------------------
+    */
+
+    public function getProductNameAttribute()
     {
-        return $this->belongsTo(User::class);
+        $goods = $this->goods;
+
+        if (empty($goods)) {
+            return 'Unknown Product';
+        }
+
+        if (isset($goods['product_id'])) {
+            return Product::where('id', $goods['product_id'])->value('name') ?? 'Unknown Product';
+        }
+
+        $productIds = array_column($goods, 'product_id');
+        $names = Product::whereIn('id', $productIds)->pluck('name')->toArray();
+
+        return implode(', ', $names);
     }
 
-    public function getGoodsArrayAttribute()
+    public function getQuantityAttribute()
     {
-        return json_decode($this->goods, true);
+        $goods = $this->goods;
+
+        if (empty($goods)) return 0;
+
+        if (isset($goods['quantity'])) {
+            return $goods['quantity'];
+        }
+
+        return array_sum(array_column($goods, 'quantity'));
     }
-
-public function getQuantityAttribute()
-{
-    $goods = $this->goods; // already an array
-
-    if (empty($goods)) return 0;
-
-    // Single product
-    if (isset($goods['quantity'])) {
-        return $goods['quantity'];
-    }
-
-    // Multiple products
-    return array_sum(array_column($goods, 'quantity'));
 }
-
-
-}
-

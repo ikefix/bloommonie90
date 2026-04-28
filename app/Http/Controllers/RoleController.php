@@ -10,20 +10,24 @@ use Illuminate\Support\Facades\Auth;
 class RoleController extends Controller
 
 {
-    public function index()
-    {
-        if (Auth::user()->role !== 'admin') {
-            return abort(403, 'Unauthorized action.');
-        }
-
-        $users = User::with('shop')
-            ->where('role', '!=', 'admin')
-            ->get();
-        
-        $shops = Shop::all();
-
-        return view('admin.manage_roles', compact('users', 'shops'));
+    
+public function index()
+{
+    if (Auth::user()->role !== 'admin') {
+        abort(403, 'Unauthorized action.');
     }
+
+    $ownerId = auth()->user()->owner_id ?? auth()->id();
+
+    $users = User::with('shop')
+        ->whereIn('role', ['manager', 'cashier'])
+        ->where('owner_id', $ownerId) // 🔒 THIS IS THE FIX
+        ->get();
+
+    $shops = Shop::where('owner_id', $ownerId)->get(); // 🔒 ALSO FIX THIS
+
+    return view('admin.manage_roles', compact('users', 'shops'));
+}
 
     public function updateRole(Request $request, $id)
     {
